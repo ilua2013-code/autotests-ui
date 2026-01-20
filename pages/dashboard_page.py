@@ -1,12 +1,13 @@
 from playwright.sync_api import Page, expect
 from components.navigation.navbar_component import NavbarComponent
+from components.sidebar.sidebar_component import SidebarComponent
 from pages.base_page import BasePage 
 
 class DashboardPage(BasePage):
     def __init__(self, page: Page):
         super().__init__(page)
         self.navbar = NavbarComponent(page)
-
+        self.sidebar = SidebarComponent(page)
         self.dashboard_title = page.get_by_test_id('dashboard-toolbar-title-text')
         
         self.students_title = page.get_by_test_id('students-widget-title-text')
@@ -21,16 +22,16 @@ class DashboardPage(BasePage):
         self.scores_title = page.get_by_test_id('scores-widget-title-text')
         self.scores_chart = page.get_by_test_id('scores-scatter-chart')
         
-    def chek_visable_dashboard_title(self):
+    def check_visible_dashboard_title(self):
         expect(self.dashboard_title).to_be_visible()
         expect(self.dashboard_title).to_have_text("Dashboard")
     
-    def chek_visable_students_chart(self):
+    def check_visible_students_chart(self):
         expect(self.students_title).to_be_visible()
         expect(self.students_title).to_have_text("Students")
         expect(self.students_chart).to_be_visible()
         
-    def chek_visable_courses_chart(self):
+    def check_visible_courses_chart(self):
         expect(self.courses_title).to_be_visible()
         expect(self.courses_title).to_have_text("Courses")
         expect(self.courses_chart).to_be_visible()
@@ -41,7 +42,7 @@ class DashboardPage(BasePage):
         expect(self.activities_title).to_have_text('Activities')
         expect(self.activities_chart).to_be_visible()
         
-    def chek_visable_scores_chart(self):
+    def check_visible_scores_chart(self):
         expect(self.scores_title).to_be_visible()
         expect(self.scores_title).to_have_text("Scores")
         expect(self.scores_chart).to_be_visible()
