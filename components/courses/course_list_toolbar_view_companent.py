@@ -1,15 +1,18 @@
 import re
+import allure
 from components.base_component import BaseComponent
 from playwright.sync_api import Page
-
 from elements.button import Button
 from elements.text import Text
+
+
 class CourseListbarToolbarViewCompanent(BaseComponent):
     def __init__(self, page: Page):
         super().__init__(page)
         self.title = Text(page, 'courses-list-toolbar-title-text', 'Title')
         self.create_course_button = Button(page, 'courses-list-toolbar-create-course-button', 'Create course')
 
+    
     def check_visible(self):
         self.title.check_visible()
         self.title.check_have_text('Courses')
