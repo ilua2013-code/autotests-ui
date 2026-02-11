@@ -1,7 +1,7 @@
 from typing import  Iterator
 import allure
 from allure_commons.types import AttachmentType
-from playwright.sync_api import Page, Playwright
+from playwright.sync_api import Page, Playwright, Browser
 
 from config import settings
 
@@ -9,11 +9,15 @@ from config import settings
 def initialize_playwrigth_page(
         playwright: Playwright,
         test_name: str,
+        browser_type: Browser,
         storage_state: str | None = None
         )-> Iterator[Page]:
     
-    browser = playwright.chromium.launch(headless=settings.headless)
-    context = browser.new_context(storage_state=storage_state, record_video_dir=settings.videos_dir)
+    browser = playwright[browser_type].launch(headless=settings.headless)
+    context = browser.new_context(
+        base_url=settings.get_base_url(),
+        storage_state=storage_state, 
+        record_video_dir=settings.videos_dir)
     context.tracing.start(screenshots=True, snapshots=True, sources=True)
     page = context.new_page()
     

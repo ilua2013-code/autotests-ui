@@ -1,6 +1,6 @@
 from typing import Self
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import BaseModel, EmailStr, FailFast, FilePath, HttpUrl, DirectoryPath
+from pydantic import BaseModel, EmailStr, FilePath, HttpUrl, DirectoryPath
 from enum import Enum
 
 class Browser(str, Enum):
@@ -32,10 +32,13 @@ class Settings(BaseSettings):
     tracing_dir: DirectoryPath
     browser_state_file: FilePath 
 
+    def get_base_url(self) -> str:
+        return f"{self.app_url}/"
+
     @classmethod
     def initalize(cls) -> Self:
         videos_dir = DirectoryPath("./videos")
-        tracing_dir = DirectoryPath("./trcing")
+        tracing_dir = DirectoryPath("./tracing")
         browser_state_file = FilePath("browser-state.json")
         videos_dir.mkdir(exist_ok=True)
         tracing_dir.mkdir(exist_ok=True)
@@ -45,5 +48,6 @@ class Settings(BaseSettings):
             tracing_dir = tracing_dir,
             browser_state_file = browser_state_file 
             )
-
+    
+    
 settings = Settings.initalize()
