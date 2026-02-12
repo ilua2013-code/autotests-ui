@@ -62,6 +62,8 @@ class TestAutorization:
         dashboard_page.sidebar.check_visible()
         dashboard_page.sidebar.click_logout()
 
+
+    @pytest.mark.xdist_group(name="authorization-group")
     @pytest.mark.parametrize("email, password", [
         ("user.name@gmail.com", "password"), 
         ("user.name@gmail.com", "  "),
