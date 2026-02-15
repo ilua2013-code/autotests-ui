@@ -204,3 +204,6 @@ htmlcov/
 
 # Allure results
 allure-results/
+
+videos/
+tracing/
