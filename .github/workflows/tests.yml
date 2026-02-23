@@ -37,17 +37,34 @@ jobs:
       - name: Run Playwright tests with pytest and generate Allure results
         run: |
           pytest -m regression --alluredir=allure-results --numprocesses 2  # Запускаем тесты, отмеченные как "regression", генерируем результаты для Allure
-
-      # 5. Шаг для получения истории отчётов Allure, если она существует
-      - name: Get Allure history
-        uses: actions/checkout@v6  # Опять клонируем репозиторий, чтобы получить историю отчётов
-        if: always()  
-        continue-on-error: true  # Если здесь возникнет ошибка, workflow всё равно продолжит выполнение
+      # 5. Шаг для сохранения отчётов Allure
+      - name: Upload Allure results
+        uses: actions/upload-artifact@v4  
+        if: always()
         with:
-          ref: gh-pages  # Указываем ветку gh-pages для получения отчётов
-          path: gh-pages  # Указываем путь для сохранения отчётов
+          name: allure-results
+          path: allure-results
+          retention-days: 7
+      
+  publish-report:
+    needs: run-tests
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      # 1. Шаг для получения истории отчётов Allure
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+      # 2. Шаг для распаковки истории отчётов Allure
+      - name: Download Allure results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
 
-      # 6. Шаг для генерации и отображения отчёта Allure
+      # 3. Шаг для генерации и отображения отчёта Allure
       - name: Generates Allure Report with history
         uses: simple-elf/allure-report-action@master  # Используем готовое решение из GitHub Marketplace для генерации Allure отчёта
         if: always()  
@@ -55,7 +72,7 @@ jobs:
           allure_results: allure-results  # Указываем каталог с результатами тестов
           allure_history: allure-history  # Указываем каталог для истории отчётов Allure
 
-      # 7. Шаг для деплоя отчёта Allure на GitHub Pages, чтобы его можно было просматривать в браузере
+      # 4. Шаг для деплоя отчёта Allure на GitHub Pages, чтобы его можно было просматривать в браузере
       - name: Deploy report to Github Pages
         if: always()  
         uses: peaceiris/actions-gh-pages@v4  # Используем GitHub Action для публикации отчёта на GitHub Pages
